@@ -1,0 +1,17 @@
+{
+  "name": "wa-pairspam",
+  "version": "1.0.0",
+  "description": "WhatsApp pairing code spam loop — termux build",
+  "type": "module",
+  "main": "pairspam.js",
+  "scripts": {
+    "start": "node pairspam.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.18"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}
