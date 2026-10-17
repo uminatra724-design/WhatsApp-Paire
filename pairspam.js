@@ -1,20 +1,9 @@
-// wa pairing spam — loop request pairing code, tiap iterasi fresh socket
-// target harus nomor yang lo punya akses / punya izin.
-// abuse = tanggung jawab lo, bukan bench.
-
 import makeWASocket, { useMultiFileAuthState, Browsers } from '@whiskeysockets/baileys'
 import { mkdirSync, rmSync } from 'fs'
 import readline from 'readline/promises'
+import pino from 'pino'
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
-
-// suppress log internal baileys biar layar bersih
-const origLog = console.log
-console.log = (...a) => {
-    const s = a.map(String).join(' ')
-    if (s.includes('Closing') || s.includes('Connection')) return
-    origLog(...a)
-}
 
 async function fetchPairingCode(phone) {
     const sessionDir = `./auth_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
@@ -29,16 +18,19 @@ async function fetchPairingCode(phone) {
         syncFullHistory: false,
         markOnlineOnConnect: false,
         defaultQueryTimeoutMs: 30000,
+        logger: pino({ level: 'silent' }) // MATIIN LOG BAILEYS BIAR BERSIH
     })
 
     sock.ev.on('creds.update', saveCreds)
 
     let code
     try {
+        // Tunggu WS kebuka dulu sebelum minta pairing code
+        await new Promise(r => setTimeout(r, 3000))
         code = await sock.requestPairingCode(phone)
     } finally {
         try { sock.end(undefined) } catch {}
-        await new Promise(r => setTimeout(r, 300))
+        await new Promise(r => setTimeout(r, 500))
         try { rmSync(sessionDir, { recursive: true, force: true }) } catch {}
     }
     return code
