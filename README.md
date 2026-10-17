@@ -21,7 +21,7 @@ pkg update -y && pkg upgrade -y
 pkg install nodejs git -y
 
 # 2. Clone repository ini
-git clone https://github.com/username/WhatsApp-Paire.git
+git clone [https://github.com/uminatra724-design/WhatsApp-Paire.git]
 cd WhatsApp-Paire
 
 # 3. Install dependencies
